@@ -1,4 +1,4 @@
-/* Primer Pre Entrega - Portillo Colinas
+/* Segunda Pre Entrega - Portillo Colinas
 Algoritmo utilizando un condicional If en el cual se le indica al alumno dependiendo la nota que ingrese si esta aprobado o no
 */
 let nota = parseInt(prompt("Ingrese la nota de su examen"));
