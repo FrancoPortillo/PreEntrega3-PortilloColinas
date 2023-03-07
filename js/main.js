@@ -1,101 +1,151 @@
-/* Segunda Pre Entrega - Portillo Colinas
- */
-class Producto {
-  constructor(nombre, precio) {
-    this.nombre = nombre;
-    this.precio = precio;
+// Array de productos
+const productos = {
+  producto1: {
+    nombre: "Asado",
+    precio: "1900",
+    descripcion: "Precio x Kg",
+    srcImg: "",
+  },
+  producto2: {
+    nombre: "Bife de Chorizo",
+    precio: "2000",
+    descripcion: "Precio x Kg",
+    srcImg: "",
+  },
+  producto3: {
+    nombre: "Picada Especial",
+    precio: "1300",
+    descripcion: "Precio x Kg",
+    srcImg: "",
+  },
+  producto4: {
+    nombre: "Milanesas de Pollo",
+    precio: "1500",
+    descripcion: "Precio x Kg",
+    srcImg: "",
+  },
+};
+// Se captura el template de los productos
+const templateProd = document.getElementById("template-prod").content;
+const contenedorProd = document.querySelector(".contenedor-productos");
+const fragment = document.createDocumentFragment();
+
+// TODO LO RELACIONADO A AGREGAR LOS PRODUCTOS AL DOM
+Object.values(productos).forEach((producto) => {
+  templateProd.querySelector(".div-info .nombre-prod").textContent =
+    producto.nombre;
+  templateProd.querySelector(".div-precio-boton .precio").textContent =
+    producto.precio;
+  templateProd.querySelector(".div-info .descripcion-prod").textContent =
+    producto.descripcion;
+  templateProd
+    .querySelector(".contenedor-img img")
+    .setAttribute("alt", producto.nombre);
+  templateProd
+    .querySelector(".contenedor-img img")
+    .setAttribute("src", producto.srcImg);
+  const clone = templateProd.cloneNode(true);
+  fragment.appendChild(clone);
+});
+contenedorProd.appendChild(fragment);
+
+// TODO LO RELACIONADO AL CARRITO DE COMPRA
+let carrito = {};
+const templateTabla = document.getElementById(
+  "agregar-producto-al-carro"
+).content;
+const tbodyCarrito = document.getElementById("carrito-body");
+const fragmentTabla = document.createDocumentFragment();
+const templateFoot = document.getElementById("tfooter").content;
+const tfootCarrito = document.getElementById("footer");
+
+contenedorProd.addEventListener("click", (e) => {
+  if (e.target.textContent === "Agregar") {
+    setCarrito(e.target.parentElement.parentElement);
   }
-}
-
-const carroCompras = [];
-
-const agregarProducto = (producto) => {
-  carroCompras.push(producto);
+  e.stopPropagation();
+});
+const setCarrito = (e) => {
+  const pivoteCarrito = {
+    nombre: e.querySelector(".div-info .nombre-prod").textContent,
+    precio: e.querySelector(".div-precio-boton .precio").textContent,
+    cantidad: 1,
+  };
+  if (carrito.hasOwnProperty(pivoteCarrito.nombre)) {
+    carrito[pivoteCarrito.nombre].cantidad += 1;
+  } else {
+    carrito[pivoteCarrito.nombre] = { ...pivoteCarrito };
+  }
+  pintarTabla(carrito);
 };
 
-const calcularTotal = () => {
-  let total = 0;
-  for (const producto of carroCompras) {
-    total += producto.precio;
-  }
-  return total;
+const pintarTabla = (objetoCarrito) => {
+  Object.values(objetoCarrito).forEach((objeto) => {
+    const cloneTabla = templateTabla.cloneNode(true);
+    cloneTabla.getElementById("producto").textContent = objeto.nombre;
+    cloneTabla.getElementById("cant").textContent = objeto.cantidad;
+    cloneTabla.getElementById("precio-uni").textContent = objeto.precio;
+    let precioTotal = parseFloat(objeto.precio) * objeto.cantidad;
+    cloneTabla.getElementById("precio-total-prod").textContent =
+      precioTotal.toFixed(2);
+    fragmentTabla.appendChild(cloneTabla);
+  });
+  tbodyCarrito.innerHTML = "";
+  tbodyCarrito.appendChild(fragmentTabla);
+  pintarFooter();
 };
+const pintarFooter = () => {
+  tfootCarrito.innerHTML = "";
+  if (Object.keys(carrito).length === 0) {
+    tfootCarrito.innerHTML =
+      "<tr><td colspan = 4>¡No hay ningun elemento en el carrito!</td></tr>";
+  } else {
+    const total = Object.values(carrito).reduce(
+      (acc, { cantidad, precio }) => acc + cantidad * precio,
+      0
+    );
+    templateFoot.getElementById("total-a-pagar").textContent = total.toFixed(2);
+    const cloneFoot = templateFoot.cloneNode(true);
+    fragment.appendChild(cloneFoot);
+    tfootCarrito.appendChild(fragment);
+    //Boton Vaciar carrito
+    const botonVaciar = document.getElementById("vaciar-tabla");
+    botonVaciar.addEventListener("click", () => {
+      carrito = {};
+      pintarTabla(carrito);
+      pintarFooter();
+    });
 
-const milanesaDePollo = new Producto("Milanesas de Pollo", 1000);
-const bolaDeLomo = new Producto("Bola de Lomo", 1400);
-const bifeDeChorizo = new Producto("Bifes de Chorizo", 1500);
-const medallonDePollo = new Producto("Medallones de Pollo", 1650);
-const asado = new Producto("Asado", 1700);
-
-alert("Bienvenido a la Carniceria!");
-let continuarCompra = true;
-
-while (continuarCompra != false) {
-  const productoDeseado = prompt(
-    "Ingrese el producto que quiere agregar al carro de compras: \n 1. Milanesas de Pollo \n 2. Bola de Lomo \n 3. Bife de Chorizo \n 4. Medallones de Pollo \n 5. Asado \n 6. Finalizar Compra. \n Recuerde que es 1kg por opcion elegida."
-  );
-  switch (productoDeseado) {
-    case "1":
-      agregarProducto(milanesaDePollo);
-      alert(
-        `Usted seleccionó el producto ${milanesaDePollo.nombre} con un precio de ${milanesaDePollo.precio} Pesos.`
-      );
-      console.log(
-        `producto seleccionado ${milanesaDePollo.nombre} precio: ${milanesaDePollo.precio} Pesos.`
-      );
-      break;
-    case "2":
-      agregarProducto(bolaDeLomo);
-      alert(
-        `Usted seleccionó el producto ${bolaDeLomo.nombre} con un precio de ${bolaDeLomo.precio} Pesos.`
-      );
-      console.log(
-        `producto seleccionado ${bolaDeLomo.nombre} precio: ${bolaDeLomo.precio} Pesos.`
-      );
-      break;
-    case "3":
-      agregarProducto(bifeDeChorizo);
-      alert(
-        `Usted seleccionó el producto ${bifeDeChorizo.nombre} con un precio de ${bifeDeChorizo.precio} Pesos.`
-      );
-      console.log(
-        `producto seleccionado ${bifeDeChorizo.nombre} precio: ${bifeDeChorizo.precio} Pesos.`
-      );
-      break;
-    case "4":
-      agregarProducto(medallonDePollo);
-      alert(
-        `Usted seleccionó el producto ${medallonDePollo.nombre} con un precio de ${medallonDePollo.precio} Pesos.`
-      );
-      console.log(
-        `producto seleccionado ${medallonDePollo.nombre} precio: ${medallonDePollo.precio} Pesos.`
-      );
-      break;
-    case "5":
-      agregarProducto(asado);
-      alert(
-        `Usted seleccionó el producto ${asado.nombre} con un precio de ${asado.precio} Pesos.`
-      );
-      console.log(
-        `producto seleccionado ${asado.nombre} precio: ${asado.precio} Pesos.`
-      );
-      break;
-
-    case "6":
-      continuarCompra = false;
-      alert(
-        "Gracias por comprar en su Carniceria de Confianza, Vuelva Pronto!"
-      );
-      break;
-    default:
-      alert("Opción Inválida. Por favor, elija una opción válida");
+    //Botones aumentar y disminuir cantidades
   }
-}
-
-let total = 0;
-for (let producto of carroCompras) {
-  total += producto.precio;
-  console.log(producto.nombre + " - Precio: $ " + producto.precio);
-}
-
-alert("Total a pagar: $ " + total);
+};
+tbodyCarrito.addEventListener("click", (e) => {
+  if (e.target.classList.contains("button")) {
+    aumentarDisminuir(e.target);
+  }
+});
+const aumentarDisminuir = (boton) => {
+  if (boton.textContent === "+") {
+    const indicador =
+      boton.parentElement.parentElement.firstElementChild.textContent;
+    Object.values(carrito).forEach((elemento) => {
+      if (elemento.nombre === indicador) {
+        carrito[elemento.nombre].cantidad++;
+      }
+    });
+  }
+  if (boton.textContent === "-") {
+    const indicador =
+      boton.parentElement.parentElement.firstElementChild.textContent;
+    Object.values(carrito).forEach((elemento) => {
+      if (elemento.nombre === indicador) {
+        carrito[elemento.nombre].cantidad--;
+        if (carrito[elemento.nombre].cantidad === 0) {
+          delete carrito[elemento.nombre];
+        }
+      }
+    });
+  }
+  pintarTabla(carrito);
+  pintarFooter();
+};
