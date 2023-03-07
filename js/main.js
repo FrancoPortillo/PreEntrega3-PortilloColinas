@@ -4,25 +4,25 @@ const productos = {
     nombre: "Asado",
     precio: "1900",
     descripcion: "Precio x Kg",
-    srcImg: "",
+    srcImg: "images/asado.jpg",
   },
   producto2: {
     nombre: "Bife de Chorizo",
     precio: "2000",
     descripcion: "Precio x Kg",
-    srcImg: "",
+    srcImg: "images/bife-de-chorizo.jpg",
   },
   producto3: {
     nombre: "Picada Especial",
     precio: "1300",
     descripcion: "Precio x Kg",
-    srcImg: "",
+    srcImg: "images/picada_especial.jpg",
   },
   producto4: {
     nombre: "Milanesas de Pollo",
     precio: "1500",
     descripcion: "Precio x Kg",
-    srcImg: "",
+    srcImg: "images/milanesa_pollo.jpg",
   },
 };
 // Se captura el template de los productos
